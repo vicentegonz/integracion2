@@ -8,22 +8,31 @@ const router = new Router({
 function checkParam(data){
     if (data.hasOwnProperty('id')) {
         // data.media
-        if (data.id.length < 10){
-            return {"error": "Missing parameter: id"}
-        }
+		if (typeof data.id != typeof "string"){
+			return {"error": `Invalid type of field id, got ${typeof data.id} expecting ${typeof "string"}`}
+		} else {
+			if (data.id.length < 10){
+				return {"error": "Missing parameter: id"}
+			}
+		}
     } else {
         return {"error": "Missing parameter: id"}
     }
     if (data.hasOwnProperty('departure')) {
-        // data.media
+        if (typeof data.departure != typeof "string"){
+			return {"error": `Invalid type of field departure, got ${typeof data.departure} expecting ${typeof "string"}`}
+		}
     } else {
         return {"error": "Missing parameter: departure"}
     }
     if (data.hasOwnProperty('destination')) {
-        // data.media
+        if (typeof data.destination != typeof "string"){
+			return {"error": `Invalid type of field destination, got ${typeof data.destination} expecting ${typeof "string"}`}
+		}
     } else {
         return {"error": "Missing parameter: destination"}
     }
+
 	if (data.hasOwnProperty('destination') && data.hasOwnProperty('departure')){
 		if (data.destination === data.departure){
 			return {"error": "Departure and Destination airports must be different"}
@@ -159,15 +168,21 @@ router.post('/:id/position', async (ctx, next) => {
 	// eslint-disable-next-line no-undef
 	var res = "none";
 	if (ctx.request.body.hasOwnProperty('lat')) {
-		if (ctx.request.body.lat > 90 || ctx.request.body.lat < -90){
-			res =  {"error": "Latitude must be between -90 and 90"}
+		if (typeof ctx.request.body.lat != typeof 39.9667){
+			return {"error": `Invalid type of field lat, got ${typeof ctx.request.body.lat} expecting ${typeof 39.9667}`}
+		} else {
+			if (ctx.request.body.lat > 90 || ctx.request.body.lat < -90){
+				return {"error": "Latitude must be between -90 and 90"}
+			}
 		}
-	} else {
-		res =  {"error": "Missing parameter: lat"}
 	}
 	if (ctx.request.body.hasOwnProperty('long')) {
-		if (ctx.request.body.long > 180 || ctx.request.body.long < -180){
-			res =  {"error": "Longitude must be between -180 and 180"}
+		if (typeof ctx.request.body.long != typeof 39.9667){
+			return {"error": `Invalid type of field long, got ${typeof ctx.request.body.long} expecting ${typeof 39.9667}`}
+		} else {
+			if (ctx.request.bodylong > 180 || ctx.request.body.long < -180){
+				return {"error": "Longitude must be between -180 and 180"}
+			}
 		}
 	} else {
 		res =  {"error": "Missing parameter: long"}

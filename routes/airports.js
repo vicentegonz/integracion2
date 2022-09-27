@@ -6,43 +6,66 @@ const router = new Router({
 
 function checkParam(data){
     if (data.hasOwnProperty('id')) {
-        // data.media
-        if (data.id.length < 3){
-            return {"error": "Missing parameter: id"}
+        if (typeof data.id != "string"){
+            return {"error": `Invalid type of field id, got ${typeof data.id} expecting ${typeof "string"}`}
+        } else {
+            if (data.id.length < 3){
+                return {"error": "Missing parameter: id"}
+            }
         }
     } else {
         return {"error": "Missing parameter: id"}
     }
+
     if (data.hasOwnProperty('name')) {
-        // data.media
+        if (typeof data.name != typeof "string"){
+            return {"error": `Invalid type of field name, got ${typeof data.name} expecting ${typeof "string"}`}
+        }
     } else {
         return {"error": "Missing parameter: name"}
     }
+
     if (data.hasOwnProperty('country')) {
-        // data.media
+        if (typeof data.country != typeof "string"){
+            return {"error": `Invalid type of field country, got ${typeof data.country} expecting ${typeof "string"}`}
+        }
     } else {
         return {"error": "Missing parameter: country"}
     }
+    
     if (data.hasOwnProperty('city')) {
-        // data.media
+        if (typeof data.city != typeof "string"){
+            return {"error": `Invalid type of field city, got ${typeof data.city} expecting ${typeof "string"}`}
+        }
     } else {
         return {"error": "Missing parameter: city"}
     }
     if (data.hasOwnProperty('position')) {
-        // data.media
-        if (data.position.hasOwnProperty('lat')) {
-            if (data.position.lat > 90 || data.position.lat < -90){
-                return {"error": "Latitude must be between -90 and 90"}
-            }
+        if (typeof data.position != typeof {position:{lat: 5, long:2}}){
+            return {"error": `Invalid type of field position, got ${typeof data.position} expecting ${typeof {position:{lat: 5, long:2}}}`}
         } else {
-            return {"error": "Missing parameter: lat"}
-        }
-        if (data.position.hasOwnProperty('long')) {
-            if (data.position.long > 180 || data.position.long < -180){
-                return {"error": "Longitude must be between -180 and 180"}
+            if (data.position.hasOwnProperty('lat')) {
+                if (typeof data.position.lat != typeof 39.9667){
+                    return {"error": `Invalid type of field lat, got ${typeof data.position.lat} expecting ${typeof 39.9667}`}
+                } else {
+                    if (data.position.lat > 90 || data.position.lat < -90){
+                        return {"error": "Latitude must be between -90 and 90"}
+                    }
+                }
+            } else {
+                return {"error": "Missing parameter: lat"}
             }
-        } else {
-            return {"error": "Missing parameter: long"}
+            if (data.position.hasOwnProperty('long')) {
+                if (typeof data.position.long != typeof 39.9667){
+                    return {"error": `Invalid type of field long, got ${typeof data.position.long} expecting ${typeof 39.9667}`}
+                } else {
+                    if (data.position.long > 180 || data.position.long < -180){
+                        return {"error": "Longitude must be between -180 and 180"}
+                    }
+                }
+            } else {
+                return {"error": "Missing parameter: long"}
+            }
         }
     } else {
         return {"error": "Missing parameter: position"}
