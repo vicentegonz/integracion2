@@ -162,7 +162,6 @@ router.delete('/:id', async (ctx, next) => {
                 id: ctx.params.id
             }
         }});
-        console.log(des,"-------", dep)
         if (dep.length > 0 || des.length > 0){
             ctx.body = {"error": `Airport ${ctx.params.id} has flights in progress`};
             ctx.response.status = 409;
@@ -173,7 +172,6 @@ router.delete('/:id', async (ctx, next) => {
                     id: ctx.params.id
                 }
             });
-            console.log(res)
             ctx.response.status = 204
         }
     }

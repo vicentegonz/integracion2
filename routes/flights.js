@@ -1,4 +1,5 @@
 const Router = require('koa-router');
+const axios = require('axios');
 
 const router = new Router({
 	prefix: '/flights'
@@ -31,12 +32,19 @@ function checkParam(data){
     return "none"
 }
 
+const requestDist = async (dep, des) => {
+	var base = `https://tarea-2.2022-2.tallerdeintegracion.cl/distance?initial=${dep.position.lat},${dep.position.long}
+	&final=${des.position.lat},${des.position.long}`
+	//var base2 = "https://tarea-2.2022-2.tallerdeintegracion.cl/distance?initial=-33.447487,-70.673676&final=-23.65,-70.4"
+	var res = await axios.get(base)
+	return res.data
+}
+
 router.get('/', async (ctx, next) => {
 	// eslint-disable-next-line no-undef
 	const f = await ctx.db.Flight.findAll({
 		attributes: ["id", "departure", "destination", "total_distance", "traveled_distance", "bearing", "position"]
 	});
-	console.log("in get f", f.length)
 	if (f.length === 0){
 		ctx.body = {};
 		next();
@@ -74,6 +82,7 @@ router.post('/', async (ctx, next) => {
 					next();
 				}
 			} else {
+				var api = await requestDist(dep[0], des[0])
 				var data = {
 					id: ctx.request.body.id,
 					departure: {
@@ -84,7 +93,7 @@ router.post('/', async (ctx, next) => {
 						id: des[0].id,
 						name: des[0].name
 					},
-					total_distance: 0,
+					total_distance: api.distance,
 					traveled_distance: 0,
 					bearing: 0,
 					position: {
@@ -116,7 +125,6 @@ router.get('/:id', async (ctx, next) => {
 		attributes: ["id", "departure", "destination", "total_distance", "traveled_distance", "bearing", "position"],
 		where: {id: ctx.params.id}
 	});
-	console.log("in get f", f.length)
 	if (f.length === 0){
 		ctx.body = {"error": `Flight with id ${ctx.params.id} not found`};
 		ctx.response.status = 404
@@ -132,7 +140,6 @@ router.delete('/:id', async (ctx, next) => {
 	const f = await ctx.db.Flight.findAll({
 		where: {id: ctx.params.id}
 	});
-	console.log("in get f", f.length)
 	if (f.length === 0){
 		ctx.body = {"error": `Flight with id ${ctx.params.id} not found`};
 		ctx.response.status = 404
@@ -165,7 +172,6 @@ router.post('/:id/position', async (ctx, next) => {
 	} else {
 		res =  {"error": "Missing parameter: long"}
 	}
-	console.log(res)
 	if (res === "none"){
 		const f = await ctx.db.Flight.findAll({
 			attributes: ["id", "departure", "destination", "total_distance", "traveled_distance", "bearing", "position"],
@@ -176,12 +182,21 @@ router.post('/:id/position', async (ctx, next) => {
 			ctx.response.status = 404
 			next();
 		} else {
-			data = {
+			const initial = await ctx.db.Flight.findAll({
+				attributes: ["position"],
+				where: {id: ctx.params.id}
+			});
+			var data = {
+				traveled_distance: 0,
+				bearing: 0,
 				position:{
 					lat: ctx.request.body.lat,
 					long: ctx.request.body.long,
 				}
 			}
+			var api_pos = await requestDist(initial[0], data)
+			data.bearing = api_pos.bearing
+			data.traveled_distance = api_pos.distance
 			await ctx.db.Flight.update(data, {where: {id: ctx.params.id}});
 			const f = await ctx.db.Flight.findAll({
 				attributes: ["id", "departure", "destination", "total_distance", "traveled_distance", "bearing", "position"],
