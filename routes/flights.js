@@ -198,24 +198,19 @@ router.post('/:id/position', async (ctx, next) => {
 			next();
 		} else {
 			const initial = await ctx.db.Flight.findAll({
-				attributes: ["departure"],
 				where: {id: ctx.params.id}
 			});
-			const initial2 = await ctx.db.Airport.findAll({
-				attributes: ["position"],
-				where: {id: initial[0].departure.id}
-			});
 			var data = {
-				traveled_distance: 0,
-				bearing: 0,
+				traveled_distance:initial[0].traveled_distance,
+				bearing: initial[0].bearing,
 				position:{
 					lat: ctx.request.body.lat,
 					long: ctx.request.body.long,
 				}
 			}
-			var api_pos = await requestDist(initial2[0], data)
+			var api_pos = await requestDist(initial[0], data)
 			data.bearing = api_pos.bearing
-			data.traveled_distance = api_pos.distance
+			data.traveled_distance = data.traveled_distance + api_pos.distance
 			await ctx.db.Flight.update(data, {where: {id: ctx.params.id}});
 			const f = await ctx.db.Flight.findAll({
 				attributes: ["id", "departure", "destination", "total_distance", "traveled_distance", "bearing", "position"],
