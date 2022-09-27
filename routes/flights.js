@@ -186,10 +186,12 @@ router.post('/:id/position', async (ctx, next) => {
 				attributes: ["departure"],
 				where: {id: ctx.params.id}
 			});
+			console.log(initial[0])
 			const initial2 = await ctx.db.Airport.findAll({
 				attributes: ["position"],
 				where: {id: initial[0].id}
 			});
+			console.log(initial2[0])
 			var data = {
 				traveled_distance: 0,
 				bearing: 0,
