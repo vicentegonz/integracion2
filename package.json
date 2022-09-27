@@ -1,0 +1,33 @@
+{
+  "name": "integracion2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -L index.js",
+    "db:migrate": "sequelize-cli db:migrate"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicentegonz/integracion2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vicentegonz/integracion2/issues"
+  },
+  "homepage": "https://github.com/vicentegonz/integracion2#readme",
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "koa": "^2.13.4",
+    "koa-body": "^5.0.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-router": "^12.0.0",
+    "koa2-cors": "^2.0.6",
+    "nodemon": "^2.0.20",
+    "pg": "^8.8.0",
+    "sequelize": "^6.23.1",
+    "sequelize-cli": "^6.4.1"
+  }
+}

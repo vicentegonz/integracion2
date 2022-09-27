@@ -1,0 +1,28 @@
+services:
+    web:
+        build: .
+        container_name: my_app_node
+        volumes:
+            - .:/usr/app/
+            - /usr/integracion2/node_modules
+        ports:
+            - '8080:8080'
+        depends_on:
+            - postgres
+        env_file:
+            - ./.env
+        restart: always
+
+    postgres:
+        image: postgres
+        container_name: my_app_psql
+        ports:
+            - 5432:5432
+        env_file:
+            - ./.env_db
+        volumes:
+            - postgresdata:/var/lib/postgresql/data
+
+volumes:
+    postgresdata:
+        # command: "node app.js"
